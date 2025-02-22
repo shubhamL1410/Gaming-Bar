@@ -1,0 +1,115 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="css.css">
+    <style>
+        body {
+            background-color: burlywood;
+        }
+
+        button {
+            height: 100px;
+            width: 100px;
+            margin: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            background-color: yellow;
+            border: 1px solid black;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: seagreen;
+            margin-top: 30px;
+        }
+
+        #changeName {
+            text-align: center;
+            border: 1px solid black;
+            height: 100px;
+            width: 100px;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>ROCK-PAPER-SCISSORS</h1>
+    <div class="btn">
+        <button id="1st" onclick="check1()">
+            stone
+        </button>
+        <button id="2nd" onclick="check2()">
+            paper
+        </button>
+        <button id="3rd" onclick="check3()">
+            sizer
+        </button>
+    </div>
+    <br>
+    <div id="count">
+        <h2>you:0</h2>
+        <h2>computer:0</h2>
+    </div>
+    <br>
+    <div id="changeName">
+        <h2>start</h2>
+    </div>
+</body>
+<script>
+function getRandomNumber() {
+    return Math.floor(Math.random() * 3); 
+}
+
+function check1() {
+    let x = getRandomNumber();
+    if (x === 0) {
+        document.querySelector("#changeName").innerHTML = "draw";
+    }
+    else if (x === 1) {
+        document.querySelector("#changeName").innerHTML = "win";
+    }
+    else if (x === 2) {
+        document.querySelector("#changeName").innerHTML = "lose";
+    }
+}
+
+function check2() {
+    let x = getRandomNumber();
+    if (x === 0) {
+        document.querySelector("#changeName").innerHTML = "lose";
+    }
+    else if (x === 1) {
+        document.querySelector("#changeName").innerHTML = "draw";
+    }
+    else if (x === 2) {
+        document.querySelector("#changeName").innerHTML = "win";
+    }
+}
+
+function check3() {
+    let x = getRandomNumber();
+    if (x === 0) {
+        document.querySelector("#changeName").innerHTML = "win";
+    }
+    else if (x === 1) {
+        document.querySelector("#changeName").innerHTML = "lose";
+    }
+    else if (x === 2) {
+        document.querySelector("#changeName").innerHTML = "draw";
+    }
+}
+</script>
+
+</html>
