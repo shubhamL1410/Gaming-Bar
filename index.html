@@ -1,1 +1,84 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 20px;
+            padding: 20px;
+            max-width: 700px;
+            margin: auto;
+        }
+        .game-box {
+            border: none;
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .game-box:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        .game-box img {
+            width: 90px;
+            height: 90px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <h1>Namaste</h1>
+    <div class="container">
+        <div class="game-box" onclick="window.open('tic-tac-toe.html', '_blank')">
+            <img src="tic_photo.png" alt="Tic-Tac-Toe">
+            <p>Tic-Tac-Toe</p>
+        </div>
+        <div class="game-box" onclick="window.open('Stone-Paper_Sizer.html', '_blank')">
+            <img src="s photo.jpg" alt="Rock-Paper-Scissors">
+            <p>Rock-Paper-Scissors</p>
+        </div>
+        <div class="game-box" onclick="window.open('tetris.html', '_blank')">
+            <img src="t photo.jpeg" alt="Tetris">
+            <p>Tetris</p>
+        </div>
+        <div class="game-box" onclick="window.open('Snakegame.html', '_blank')">
+            <img src="snake.png" alt="Snake Game">
+            <p>Snake Game</p>
+        </div>
+        <div class="game-box" onclick="window.open('brick-breaker.html', '_blank')">
+            <img src="b b.png" alt="Brick Breaker">
+            <p>Brick Breaker</p>
+        </div>
+        <div class="game-box" onclick="window.open('Connect the Pipes.html', '_blank')">
+            <img src="c p.png" alt="Connect Pipes">
+            <p>Connect Pipes</p>
+        </div>
+    </div>
+</body>
+</html>
