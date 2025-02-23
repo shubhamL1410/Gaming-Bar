@@ -1,147 +1,36 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ball and Brick Game</title>
   <style>
     body {
+      background: #faf8ef;
       margin: 0;
-      padding: 20px;
-      min-height: 100vh;
-      background: 
-        linear-gradient(120deg, #000428, #004e92),
-        repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 12px);
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .game-wrapper {
-      position: relative;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 20px;
-      box-shadow: 
-        0 0 40px rgba(0, 0, 0, 0.3),
-        inset 0 0 2px rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
+      padding: 0;
     }
 
     canvas {
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      background: rgba(0, 0, 0, 0.4);
-      box-shadow: 
-        0 0 30px rgba(0, 78, 146, 0.3),
-        inset 0 0 30px rgba(0, 0, 0, 0.4);
+      border: 2px solid black;
+      margin: 0 auto;
+      display: block;
     }
 
     button {
-      position: relative;
-      background: linear-gradient(135deg, #00c6ff, #0072ff);
-      color: white;
-      border: none;
-      padding: 12px 30px;
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      margin-top: 20px;
-      box-shadow: 
-        0 4px 15px rgba(0, 114, 255, 0.3),
-        inset 0 -2px 5px rgba(0, 0, 0, 0.2);
-    }
-
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 
-        0 8px 25px rgba(0, 114, 255, 0.4),
-        inset 0 -2px 5px rgba(0, 0, 0, 0.2);
-    }
-
-    button:active {
-      transform: translateY(1px);
-    }
-
-    /* Decorative elements */
-    .corner {
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      border: 2px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .corner-tl {
-      top: 10px;
-      left: 10px;
-      border-right: none;
-      border-bottom: none;
-      border-radius: 8px 0 0 0;
-    }
-
-    .corner-tr {
-      top: 10px;
-      right: 10px;
-      border-left: none;
-      border-bottom: none;
-      border-radius: 0 8px 0 0;
-    }
-
-    .corner-bl {
-      bottom: 10px;
-      left: 10px;
-      border-right: none;
-      border-top: none;
-      border-radius: 0 0 0 8px;
-    }
-
-    .corner-br {
-      bottom: 10px;
-      right: 10px;
-      border-left: none;
-      border-top: none;
-      border-radius: 0 0 8px 0;
-    }
-
-    /* Animated background accent */
-    .bg-accent {
-      position: absolute;
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(0, 114, 255, 0.1) 0%, transparent 70%);
-      border-radius: 50%;
-      animation: float 8s infinite ease-in-out;
-      pointer-events: none;
-    }
-
-    .accent-1 { top: -150px; left: -150px; }
-    .accent-2 { bottom: -150px; right: -150px; animation-delay: -4s; }
-
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0); }
-      50% { transform: translate(30px, 30px); }
+      border-radius: 5px;
+      font-size: 1.5em;
+      display: block;
+      margin: 10 auto;
     }
   </style>
 </head>
-
 <body>
-  <div class="game-wrapper">
-    <div class="corner corner-tl"></div>
-    <div class="corner corner-tr"></div>
-    <div class="corner corner-bl"></div>
-    <div class="corner corner-br"></div>
-    <div class="bg-accent accent-1"></div>
-    <div class="bg-accent accent-2"></div>
-    <canvas id="canvas" width="720" height="600"></canvas>
-    <button onclick="gameManager.downBalls()">Drop Balls</button>
-  </div>
+  <canvas id="canvas" width="720" height="800"></canvas>
+  <button onclick="gameManager.downBalls()">Drop Balls</button>
 
   <script>
+    // Utility Functions
     function randomInt(...args) {
       if (args.length === 1) {
         const [n] = args;
@@ -150,9 +39,7 @@
 
       if (args.length === 2) {
         const [start, end] = args;
-
-        if (start > end) throw Error("시작값이 끝값보다 큼");
-
+        if (start > end) throw Error("Start value is greater than end value");
         return Math.ceil(Math.random() * (end - start)) + start;
       }
     }
@@ -165,26 +52,17 @@
 
       if (args.length === 2) {
         const [start, end] = args;
-
-        if (start > end) throw Error("시작값이 끝값보다 큼");
-
+        if (start > end) throw Error("Start value is greater than end value");
         return Math.random() * (end - start) + start;
       }
     }
 
     const range = function (n, m) {
-      if (arguments.length === 1)
-        return Array.from({ length: n }).map((_, i) => i);
-
+      if (arguments.length === 1) return Array.from({ length: n }).map((_, i) => i);
       if (arguments.length === 2) {
         if (n === m) return [n];
-        else if (n < m) {
-          return Array.from({ length: m - n + 1 }).map((_, i) => i + n);
-        } else {
-          return Array.from({ length: n - m + 1 }).map(
-            (_, i) => m - i + (n - m)
-          );
-        }
+        else if (n < m) return Array.from({ length: m - n + 1 }).map((_, i) => i + n);
+        else return Array.from({ length: n - m + 1 }).map((_, i) => m - i + (n - m));
       }
     };
 
@@ -201,12 +79,8 @@
     }
 
     const delay = (n) => new Promise((r) => setTimeout(r, n));
-  </script>
 
-  <script>
-    /**
-     * Vector Library
-     **/
+    // Vector Library
     class Vector {
       constructor(x = 0, y = 0) {
         this.x = x;
@@ -229,7 +103,7 @@
       }
 
       mag() {
-        return Math.sqrt(this.x * this.x + this.y + this.y);
+        return Math.sqrt(this.x * this.x + this.y * this.y);
       }
 
       get() {
@@ -247,20 +121,15 @@
     }
 
     Vector.mult = (v, n) => new Vector(v.x * n, v.y * n);
-
     Vector.div = (v, n) => new Vector(v.x / n, v.y / n);
-  </script>
 
-  <script>
-    /**
-     *   Canvas Library
-     **/
+    // Canvas Library
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
 
-    const width = 720;
-    const height = 600;
-    const uiOffsetY = 60;
+    const width = 710;
+    const height = 880;
+    const uiOffsetY = 80;
 
     canvas.width = width;
     canvas.height = height;
@@ -294,19 +163,10 @@
     function fillRect(x, y, w, h, color = "#171717") {
       ctx.save();
       ctx.beginPath();
-      
-      // Add subtle gradient to bricks
-      let gradient = ctx.createLinearGradient(x, y, x, y + h);
-      gradient.addColorStop(0, color);
-      gradient.addColorStop(1, adjustColor(color, -20));
-      
-      ctx.fillStyle = gradient;
-      ctx.shadowColor = color;
-      ctx.shadowBlur = 10;
-      
-      // Slightly rounded corners for bricks
-      ctx.roundRect(x, y, w, h, 4);
-      ctx.fill();
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, w, h);
+      ctx.stroke();
+      ctx.closePath();
       ctx.restore();
     }
 
@@ -314,41 +174,25 @@
       ctx.save();
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
-      
-      // Enhanced glow effect
-      ctx.shadowColor = color;
-      ctx.shadowBlur = 15;
+      ctx.lineWidth = 3;
       ctx.fillStyle = color;
-      ctx.strokeStyle = 'rgba(255,255,255,0.5)';
-      ctx.lineWidth = 2;
-      
+      ctx.strokeStyle = color;
       ctx.fill();
       ctx.stroke();
+      ctx.closePath();
       ctx.restore();
     }
 
     function clear() {
       ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-      ctx.fillRect(0, 0, width, height);
     }
 
     function shuffle(arr) {
       return arr.sort(() => Math.random() - 0.5);
     }
 
-    // Helper function to adjust color brightness
-    function adjustColor(color, amount) {
-      return color.replace(/[\d]+/g, x => Math.max(0, Math.min(255, parseInt(x) + amount)));
-    }
-  </script>
-
-  <script>
-    /**
-     *   User Code
-     **/
+    // Game Objects
     const POWER = 0.3;
-
     const Mouse = { position: new Vector(0, 0) };
 
     class BallLine {
@@ -372,7 +216,7 @@
         this.velocity = new Vector(0, 0);
         this.acceleration = new Vector(0, 0);
         this.mass = mass;
-        this.r = this.mass * 6;
+        this.r = this.mass * 8;
         this.showDirection = true;
       }
 
@@ -388,7 +232,6 @@
       update() {
         this.velocity.add(this.acceleration);
         this.position.add(this.velocity);
-
         this.acceleration.mult(0);
       }
 
@@ -425,18 +268,11 @@
       angle(mousePos) {
         const opposite = mousePos.y - this.position.y;
         const adjacent = mousePos.x - this.position.x;
-        const angle = Math.atan2(opposite, adjacent);
-
-        return angle;
+        return Math.atan2(opposite, adjacent);
       }
 
       display() {
-        // Glowing ball effect
-        ctx.save();
-        ctx.shadowColor = '#4ecca3';
-        ctx.shadowBlur = 15;
-        circle(this.position.x, this.position.y, this.r, '#4ecca3');
-        ctx.restore();
+        circle(this.position.x, this.position.y, this.r, "#5ba7f4");
       }
 
       collideWith(brick) {
@@ -505,13 +341,13 @@
           this.velocity.x *= -1;
         }
 
-        if (this.position.y > height - 80) {
+        if (this.position.y > height - 100) {
           this.velocity.y *= -1;
-          this.position.y = height - 80;
+          this.position.y = height - 100;
           this.stop();
-        } else if (this.position.y < 80) {
+        } else if (this.position.y < 100) {
           this.velocity.y *= -1;
-          this.position.y = 80;
+          this.position.y = 100;
         }
       }
     }
@@ -520,45 +356,39 @@
       constructor(n, x, y) {
         this.n = n;
         this.start = n;
-
-        this.x = x * 100;
-        this.y = y * 60 + uiOffsetY;
-        this.w = 90;
-        this.h = 50;
+        this.x = x * 120;
+        this.y = y * 80 + uiOffsetY;
+        this.w = 110;
+        this.h = 70;
       }
 
       shouldMoveDown(state) {
-        return this.y < 60 * (state.level - this.start + 1) + uiOffsetY;
+        return this.y < 80 * (state.level - this.start + 1) + uiOffsetY;
       }
 
       update(state) {
         if (this.shouldMoveDown(state)) {
           this.y = Math.min(
-            this.y + 8,
-            60 * (state.level - this.start + 1) + uiOffsetY
+            this.y + 10,
+            80 * (state.level - this.start + 1) + uiOffsetY
           );
         }
       }
 
       color(level) {
-        // More vibrant color scheme
-        const hue = ((level - this.n) / level) * 180;
-        return `hsl(${hue}, 80%, 60%)`;
+        const percentage = ((level - this.n) / level) * 30;
+        return `hsl(${percentage}, ${100 - percentage}%, 63%)`;
       }
 
       display(state) {
-        ctx.save();
-        ctx.shadowColor = 'rgba(0,0,0,0.3)';
-        ctx.shadowBlur = 5;
         fillRect(this.x, this.y, this.w, this.h, this.color(state.level));
-        ctx.fillStyle = "#fff";  // White text
-        ctx.font = "bold 20px Arial";
+        ctx.fillStyle = "black";
+        ctx.font = "20px Arial";
         ctx.fillText(
           this.n,
-          this.x + this.w/2 - 8,
-          this.y + this.h/2 + 5
+          this.x + this.w / 2 - 8,
+          this.y + this.h / 2 + 5
         );
-        ctx.restore();
       }
 
       hit() {
@@ -664,9 +494,6 @@
         this.x = x * 120 + 56;
         this.y = y * 80 + 36 + uiOffsetY;
         this.hit = false;
-
-        //         this.effectR = 18;
-        //         this.effectD = 0.1;
       }
 
       moveDownLittle(state) {
@@ -687,15 +514,10 @@
             this.x = Math.max(this.x - 30, state.ballPos.x);
           }
         }
-
-        //         this.effectR += this.effectD;
-        //         if (this.effectR > 28) this.effectR = 18;
       }
 
       display() {
         circle(this.x, this.y, this.r, "#3dd462");
-        //         if (!this.hit)
-        //             circle(this.x, this.y, this.effectR);
       }
 
       hitWithBall() {
@@ -727,33 +549,27 @@
       }
 
       showScore(state) {
-        ctx.font = "bold 20px Arial";
-        ctx.fillStyle = "#4ecca3";
-        ctx.fillText(`Score: ${state.level}`, 30, uiOffsetY/2 + 7);
+        ctx.fillText(`Current Score: ${state.level}`, 30, uiOffsetY / 2 + 7);
         ctx.fillText(
-          `Best: ${state.bestLevel}`,
-          width - 120,
-          uiOffsetY/2 + 7
+          `Best Score: ${state.bestLevel}`,
+          width - 150,
+          uiOffsetY / 2 + 7
         );
       }
 
       showBallCount(state) {
-        if (!state.ballMoving) {
-          ctx.fillStyle = "#4ecca3";
-          ctx.font = "bold 20px Arial";
+        if (!state.ballMoving)
           ctx.fillText(
             `x${state.ballCount}`,
             state.ballPos.x - 10,
-            height - 40
+            height - 55
           );
-        }
       }
 
       gameOver() {
-        fillRect(0, height/2 - 80, width, 160, "rgba(26, 26, 46, 0.9)");
-        ctx.font = "bold 40px Arial";
-        ctx.fillStyle = "#4ecca3";
-        ctx.fillText("GAME OVER!", width/2 - 100, height/2 + 10);
+        fillRect(0, height / 2 - 100, width, 200, "rgba(0, 0, 0, 0.3)");
+        ctx.font = "40px Arial";
+        ctx.fillText("Game Over!", width / 2 - 60, height / 2 + 12);
         ctx.font = "20px Arial";
       }
     }
@@ -923,7 +739,7 @@
     class GameManager {
       constructor() {
         this.state = {
-          ballPos: new Vector(width / 2, height - 80),
+          ballPos: new Vector(width / 2, height - 100),
           ballMoving: false,
           ballCount: 1,
           ballDowning: false,
@@ -976,7 +792,7 @@
         this.state.firstBallStop = false;
 
         const { x, y } = Mouse.position;
-        this.balls.shoot({ x, y: Math.min(y, height - 100) }, this.state);
+        this.balls.shoot({ x, y: Math.min(y, 720) }, this.state);
       }
 
       checkCollision() {
@@ -1044,5 +860,4 @@
     gameManager.run();
   </script>
 </body>
-
 </html>
