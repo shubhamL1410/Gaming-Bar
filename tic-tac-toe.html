@@ -10,135 +10,154 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        } 
+        }
+        
         body {
+            background-image: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1200');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             height: 100vh;
             width: 100vw;
             display: flex;
             flex-direction: column;
-            justify-content: space-evenly;
+            justify-content: center;
             align-items: center;
-            background: #355C7D;  
-            background: -webkit-linear-gradient(to right, #C06C84, #6C5B7B, #355C7D);  
-            background: linear-gradient(to right, #C06C84, #6C5B7B, #355C7D); 
+            gap: 2rem;
         }
-        h1 {
-            font-size: 60px;
-            font-weight: bold;
-            color: white;
-            background: #FF0000;
-            background: -webkit-radial-gradient(circle farthest-corner at center center, #FF0000 0%, #FFFF00 25%, #05C1FF 50%, #FFFF00 75%, #FF0000 100%);
-            background: -moz-radial-gradient(circle farthest-corner at center center, #FF0000 0%, #FFFF00 25%, #05C1FF 50%, #FFFF00 75%, #FF0000 100%);
-            background: radial-gradient(circle farthest-corner at center center, #FF0000 0%, #FFFF00 25%, #05C1FF 50%, #FFFF00 75%, #FF0000 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .turns {
-            font-size: 30px;
-            font-weight: bold;
-            font-family: cursive;
-            margin-bottom: 15px;
-        }
-        .turns.x {
-            color: cornsilk;
-            border-bottom: 2px solid cornsilk;
-        }
-        .turns.o {
-            color: paleturquoise;
-            border-bottom: 2px solid paleturquoise;
-        }
+
         .board {
-            width: 350px;
-            height: 350px;
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-gap: 8px;
-            cursor: pointer;
-        }
-        .cell {
-            font-size: 60px;
-            font-family: cursive;
-            border-radius: 15px;
-            background-color: rgba(255, 255, 255, 0.25);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .cell:hover {
-            background-color: rgba(255, 255, 255, 0.5);
-            border-left: 2px solid rgba(255, 255, 255, 0.8);
-            border-right: 2px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 15px 15px 40px -6px rgba(0, 0, 0, 0.2);
-        }
-        .cell.x {
-            color: cornsilk;
-            cursor: not-allowed;
-        }
-        .cell.o {
-            color: paleturquoise;
-            cursor: not-allowed;
-        }
-        .board.x .cell:not(.x):not(.o),
-        .board.o .cell:not(.x):not(.o) {
-            text-indent: -9999px;
-            overflow: hidden;
-        }
-        .board.x .cell:not(.x):not(.o):hover,
-        .board.o .cell:not(.x):not(.o):hover {
-            text-indent: 0px;
-            color: rgba(129, 129, 129, 0.3);
-        }
-        .finish {
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px); 
-            display: none;
-        }
-        .message {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            font-size: 30px;
-            width: 400px;
-            height: 200px;
-            border-radius: 30px;
-            background-color: linen;
-            box-shadow: 6px 7px 42px 0px rgba(0, 0, 0, 0.9);
-            font-weight: bold;
-            text-shadow: 1px 1px 3px rgba(82, 80, 80, 0.473);
-        }
-        .message .text{
-            color: maroon;
-            font-family: cursive;
-        }
-        .message button {
-            color: rgb(141, 41, 41);
-            margin-top: 30px;
-            padding: 10px 12px;
-            font-size: 20px;
-            font-weight: bold;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 10px;
+            background: #000;
+            padding: 15px;
             border-radius: 10px;
-            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 0, 255, 0.3);
         }
-        .finish button {
-            background: -webkit-linear-gradient(100deg, #fff6b7 10%, #f6416c 150%);
-            box-shadow: 1px 1px 5px 2px rgba(128, 128, 128, 0.596);
+
+        .cell {
+            background: #111;
             border: none;
+            border-radius: 5px;
+            font-size: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .finish button:active {
-            transform: scale(0.8);
+
+        .cell.x {
+            color: #ff4444;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        .cell.o {
+            color: #44ff44;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .cell:hover {
+            background: #222;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 3rem;
+            text-shadow: 0 0 10px #0088ff;
+        }
+
+        .turns {
+            color: #fff;
+            font-size: 1.5rem;
+        }
+
+        .finish {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .message {
+            background: #111;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .text {
+            color: #fff;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        #restart {
+            background: #0088ff;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        #restart:hover {
+            background: #0066cc;
+            transform: scale(1.05);
+        }
+
+        .score-board {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: #fff;
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .player-score {
+            text-align: center;
+        }
+
+        .player-score.x {
+            color: #ff4444;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        .player-score.o {
+            color: #44ff44;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .score {
+            font-size: 2rem;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <h1>TIC TAC TOE</h1>
+    <div class="score-board">
+        <div class="player-score x">
+            <div>Player X</div>
+            <div class="score" id="score-x">0</div>
+        </div>
+        <div class="player-score o">
+            <div>Player O</div>
+            <div class="score" id="score-o">0</div>
+        </div>
+    </div>
     <div class="turns x">Player X's turn</div>
     <div class="board x">
       <div class="cell">X</div>
@@ -164,6 +183,10 @@
         var turns = document.querySelector(".turns");
         var cells = document.querySelectorAll(".cell");
         var restart = document.getElementById("restart");
+        var scoreX = 0;
+        var scoreO = 0;
+        var scoreXElement = document.getElementById("score-x");
+        var scoreOElement = document.getElementById("score-o");
 
         const winCombs = [
         [0, 1, 2],
@@ -181,8 +204,22 @@
         });
 
         restart.addEventListener("click", (e) => {
-        location.reload();
-        return false;
+            cells.forEach(cell => {
+                cell.classList.remove("x", "o");
+                cell.innerHTML = "";
+                cell.addEventListener("click", doThis, { once: true });
+            });
+            
+            currTurn = "x";
+            board.classList.remove("o");
+            board.classList.add("x");
+            turns.classList.remove("o");
+            turns.classList.add("x");
+            turns.innerText = "Player X's turn";
+            
+            document.querySelector(".finish").style.display = "none";
+            
+            return false;
         });
 
         function doThis(e) {
@@ -226,6 +263,13 @@
             text.innerText = "Draw!";
         } else {
             text.innerText = "Player " + currTurn.toUpperCase() + " Wins!";
+            if (currTurn === "x") {
+                scoreX++;
+                scoreXElement.innerText = scoreX;
+            } else {
+                scoreO++;
+                scoreOElement.innerText = scoreO;
+            }
         }
         document.querySelector(".finish").style.display = "flex";
         }

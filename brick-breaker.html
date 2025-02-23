@@ -4,29 +4,142 @@
   <meta charset="utf-8" />
   <style>
     body {
-      background: #faf8ef;
       margin: 0;
-      padding: 0;
+      padding: 20px;
+      min-height: 100vh;
+      background: 
+        linear-gradient(120deg, #000428, #004e92),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 12px);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .game-wrapper {
+      position: relative;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 20px;
+      box-shadow: 
+        0 0 40px rgba(0, 0, 0, 0.3),
+        inset 0 0 2px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
     }
 
     canvas {
-      border: 2px solid black;
-      margin: 0 auto;
-      display: block;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.4);
+      box-shadow: 
+        0 0 30px rgba(0, 78, 146, 0.3),
+        inset 0 0 30px rgba(0, 0, 0, 0.4);
     }
 
     button {
-      border-radius: 5px;
-      font-size: 1.5em;
-      display: block;
-      margin: 10 auto;
+      position: relative;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      margin-top: 20px;
+      box-shadow: 
+        0 4px 15px rgba(0, 114, 255, 0.3),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 8px 25px rgba(0, 114, 255, 0.4),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    /* Decorative elements */
+    .corner {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .corner-tl {
+      top: 10px;
+      left: 10px;
+      border-right: none;
+      border-bottom: none;
+      border-radius: 8px 0 0 0;
+    }
+
+    .corner-tr {
+      top: 10px;
+      right: 10px;
+      border-left: none;
+      border-bottom: none;
+      border-radius: 0 8px 0 0;
+    }
+
+    .corner-bl {
+      bottom: 10px;
+      left: 10px;
+      border-right: none;
+      border-top: none;
+      border-radius: 0 0 0 8px;
+    }
+
+    .corner-br {
+      bottom: 10px;
+      right: 10px;
+      border-left: none;
+      border-top: none;
+      border-radius: 0 0 8px 0;
+    }
+
+    /* Animated background accent */
+    .bg-accent {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0, 114, 255, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 8s infinite ease-in-out;
+      pointer-events: none;
+    }
+
+    .accent-1 { top: -150px; left: -150px; }
+    .accent-2 { bottom: -150px; right: -150px; animation-delay: -4s; }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(30px, 30px); }
     }
   </style>
 </head>
 
 <body>
-  <canvas id="canvas" width="720" height="800"></canvas>
-  <button onclick="gameManager.downBalls()">공 내리기</button>
+  <div class="game-wrapper">
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+    <div class="bg-accent accent-1"></div>
+    <div class="bg-accent accent-2"></div>
+    <canvas id="canvas" width="720" height="600"></canvas>
+    <button onclick="gameManager.downBalls()">Drop Balls</button>
+  </div>
 
   <script>
     function randomInt(...args) {
@@ -145,9 +258,9 @@
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
 
-    const width = 710;
-    const height = 880;
-    const uiOffsetY = 80;
+    const width = 720;
+    const height = 600;
+    const uiOffsetY = 60;
 
     canvas.width = width;
     canvas.height = height;
@@ -181,10 +294,19 @@
     function fillRect(x, y, w, h, color = "#171717") {
       ctx.save();
       ctx.beginPath();
-      ctx.fillStyle = color;
-      ctx.fillRect(x, y, w, h);
-      ctx.stroke();
-      ctx.closePath();
+      
+      // Add subtle gradient to bricks
+      let gradient = ctx.createLinearGradient(x, y, x, y + h);
+      gradient.addColorStop(0, color);
+      gradient.addColorStop(1, adjustColor(color, -20));
+      
+      ctx.fillStyle = gradient;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 10;
+      
+      // Slightly rounded corners for bricks
+      ctx.roundRect(x, y, w, h, 4);
+      ctx.fill();
       ctx.restore();
     }
 
@@ -192,21 +314,32 @@
       ctx.save();
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
-      ctx.lineWidth = 3;
+      
+      // Enhanced glow effect
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 15;
       ctx.fillStyle = color;
-      ctx.strokeStyle = color;
+      ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+      ctx.lineWidth = 2;
+      
       ctx.fill();
       ctx.stroke();
-      ctx.closePath();
       ctx.restore();
     }
 
     function clear() {
       ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+      ctx.fillRect(0, 0, width, height);
     }
 
     function shuffle(arr) {
       return arr.sort(() => Math.random() - 0.5);
+    }
+
+    // Helper function to adjust color brightness
+    function adjustColor(color, amount) {
+      return color.replace(/[\d]+/g, x => Math.max(0, Math.min(255, parseInt(x) + amount)));
     }
   </script>
 
@@ -239,7 +372,7 @@
         this.velocity = new Vector(0, 0);
         this.acceleration = new Vector(0, 0);
         this.mass = mass;
-        this.r = this.mass * 8;
+        this.r = this.mass * 6;
         this.showDirection = true;
       }
 
@@ -298,7 +431,12 @@
       }
 
       display() {
-        circle(this.position.x, this.position.y, this.r, "#5ba7f4");
+        // Glowing ball effect
+        ctx.save();
+        ctx.shadowColor = '#4ecca3';
+        ctx.shadowBlur = 15;
+        circle(this.position.x, this.position.y, this.r, '#4ecca3');
+        ctx.restore();
       }
 
       collideWith(brick) {
@@ -367,13 +505,13 @@
           this.velocity.x *= -1;
         }
 
-        if (this.position.y > height - 100) {
+        if (this.position.y > height - 80) {
           this.velocity.y *= -1;
-          this.position.y = height - 100;
+          this.position.y = height - 80;
           this.stop();
-        } else if (this.position.y < 100) {
+        } else if (this.position.y < 80) {
           this.velocity.y *= -1;
-          this.position.y = 100;
+          this.position.y = 80;
         }
       }
     }
@@ -383,39 +521,44 @@
         this.n = n;
         this.start = n;
 
-        this.x = x * 120;
-        this.y = y * 80 + uiOffsetY;
-        this.w = 110;
-        this.h = 70;
+        this.x = x * 100;
+        this.y = y * 60 + uiOffsetY;
+        this.w = 90;
+        this.h = 50;
       }
 
       shouldMoveDown(state) {
-        return this.y < 80 * (state.level - this.start + 1) + uiOffsetY;
+        return this.y < 60 * (state.level - this.start + 1) + uiOffsetY;
       }
 
       update(state) {
         if (this.shouldMoveDown(state)) {
           this.y = Math.min(
-            this.y + 10,
-            80 * (state.level - this.start + 1) + uiOffsetY
+            this.y + 8,
+            60 * (state.level - this.start + 1) + uiOffsetY
           );
         }
       }
 
       color(level) {
-        const percentage = ((level - this.n) / level) * 30;
-        return `hsl(${percentage}, ${100 - percentage}%, 63%)`;
+        // More vibrant color scheme
+        const hue = ((level - this.n) / level) * 180;
+        return `hsl(${hue}, 80%, 60%)`;
       }
 
       display(state) {
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.3)';
+        ctx.shadowBlur = 5;
         fillRect(this.x, this.y, this.w, this.h, this.color(state.level));
-        ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
+        ctx.fillStyle = "#fff";  // White text
+        ctx.font = "bold 20px Arial";
         ctx.fillText(
           this.n,
-          this.x + this.w / 2 - 8,
-          this.y + this.h / 2 + 5
+          this.x + this.w/2 - 8,
+          this.y + this.h/2 + 5
         );
+        ctx.restore();
       }
 
       hit() {
@@ -584,27 +727,33 @@
       }
 
       showScore(state) {
-        ctx.fillText(`현재 점수: ${state.level}`, 30, uiOffsetY / 2 + 7);
+        ctx.font = "bold 20px Arial";
+        ctx.fillStyle = "#4ecca3";
+        ctx.fillText(`Score: ${state.level}`, 30, uiOffsetY/2 + 7);
         ctx.fillText(
-          `최고 점수: ${state.bestLevel}`,
-          width - 150,
-          uiOffsetY / 2 + 7
+          `Best: ${state.bestLevel}`,
+          width - 120,
+          uiOffsetY/2 + 7
         );
       }
 
       showBallCount(state) {
-        if (!state.ballMoving)
+        if (!state.ballMoving) {
+          ctx.fillStyle = "#4ecca3";
+          ctx.font = "bold 20px Arial";
           ctx.fillText(
             `x${state.ballCount}`,
             state.ballPos.x - 10,
-            height - 55
+            height - 40
           );
+        }
       }
 
       gameOver() {
-        fillRect(0, height / 2 - 100, width, 200, "rgba(0, 0, 0, 0.3)");
-        ctx.font = "40px Arial";
-        ctx.fillText("패배!", width / 2 - 40, height / 2 + 12);
+        fillRect(0, height/2 - 80, width, 160, "rgba(26, 26, 46, 0.9)");
+        ctx.font = "bold 40px Arial";
+        ctx.fillStyle = "#4ecca3";
+        ctx.fillText("GAME OVER!", width/2 - 100, height/2 + 10);
         ctx.font = "20px Arial";
       }
     }
@@ -774,7 +923,7 @@
     class GameManager {
       constructor() {
         this.state = {
-          ballPos: new Vector(width / 2, height - 100),
+          ballPos: new Vector(width / 2, height - 80),
           ballMoving: false,
           ballCount: 1,
           ballDowning: false,
@@ -827,7 +976,7 @@
         this.state.firstBallStop = false;
 
         const { x, y } = Mouse.position;
-        this.balls.shoot({ x, y: Math.min(y, 720) }, this.state);
+        this.balls.shoot({ x, y: Math.min(y, height - 100) }, this.state);
       }
 
       checkCollision() {
