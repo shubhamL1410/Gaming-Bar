@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Snake Game</title>
+  <style>
+    html, body {
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48ZGVmcz48cGF0dGVybiBpZD0icGF0dGVybiIgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWExYTJlIi8+PHBhdGggZD0iTTAgMGw1MCA1MEgwVjB6TTUwIDBsNTAgNTBWMEg1MHoiIGZpbGw9IiMxNjIxM2UiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjcGF0dGVybikiLz48L3N2Zz4=');
+      background-size: 100px 100px;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .game-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(5px);
+      max-height: 98vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .game-title {
+      font-size: 32px;
+      margin: 0 0 10px 0;
+      color: #90ee90;
+      text-shadow: 0 0 20px rgba(144, 238, 144, 0.5);
+      font-weight: bold;
+    }
+
+    canvas {
+      border: 3px solid rgba(144, 238, 144, 0.3);
+      border-radius: 10px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj48ZGVmcz48cGF0dGVybiBpZD0iZ3Jhc3MiIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTTAgMjVsNSAxNSAxMC0xMCA1IDIwIDEwLTIwIDUtMTAgMTAgMjAgNS0xNSIgc3Ryb2tlPSJyZ2JhKDAsIDEwMCwgMCwgMC4yKSIgZmlsbD0ibm9uZSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMxYTQ3MmEiLz48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNncmFzcykiLz48L3N2Zz4=');
+      box-shadow: 
+        0 0 30px rgba(0, 0, 0, 0.2),
+        inset 0 0 50px rgba(144, 238, 144, 0.1);
+    }
+
+    #score-container {
+      width: 100%;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      border-radius: 10px;
+      backdrop-filter: blur(5px);
+    }
+
+    .score-label {
+      font-size: 16px;
+      color: #90ee90;
+      margin: 5px 0;
+      text-shadow: 0 0 10px rgba(144, 238, 144, 0.3);
+    }
+
+    #controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    button {
+      padding: 8px 16px;
+      font-size: 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(144, 238, 144, 0.2);
+      color: white;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(144, 238, 144, 0.3);
+    }
+
+    button:hover {
+      background: rgba(144, 238, 144, 0.4);
+      transform: translateY(-2px);
+    }
+
+    #pause-btn {
+      background: rgba(255, 165, 0, 0.2);
+      border-color: rgba(255, 165, 0, 0.3);
+    }
+
+    #pause-btn:hover {
+      background: rgba(255, 165, 0, 0.4);
+    }
+
+    #restart-btn {
+      background: rgba(255, 99, 71, 0.2);
+      border-color: rgba(255, 99, 71, 0.3);
+    }
+
+    #restart-btn:hover {
+      background: rgba(255, 99, 71, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1 class="game-title">Snake Game</h1>
+    <canvas width="400" height="400" id="game"></canvas>
+    <div id="score-container">
+      <div class="score-label">Score: <span id="score">0</span></div>
+      <div class="score-label">Highest Score: <span id="highest-score">0</span></div>
+    </div>
+    <div id="controls">
+      <button id="pause-btn">Pause</button>
+      <button id="restart-btn">Restart</button>
+      <button id="new-game-btn">New Game</button>
+    </div>
+  </div>
+  <script>
+    var canvas = document.getElementById('game');
+    var context = canvas.getContext('2d');
+
+    var grid = 16;
+    var count = 0;
+    var score = 0;
+    var highestScore = 0;
+    var paused = false;
+
+    var snake = {
+      x: 160,
+      y: 160,
+      dx: grid,
+      dy: 0,
+      cells: [],
+      maxCells: 4
+    };
+
+    var apple = {
+      x: 320,
+      y: 320
+    };
+
+    // Add new variables for images
+    var snakeHead = new Image();
+    var snakeBody = new Image();
+    var appleImg = new Image();
+    
+    snakeHead.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiI+PGVsbGlwc2UgY3g9IjE2IiBjeT0iMTYiIHJ4PSIxNCIgcnk9IjgiIGZpbGw9IiMzMzY2ZmYiLz48Y2lyY2xlIGN4PSIxMCIgY3k9IjE0IiByPSIzIiBmaWxsPSJ3aGl0ZSIvPjxjaXJjbGUgY3g9IjIyIiBjeT0iMTQiIHI9IjMiIGZpbGw9IndoaXRlIi8+PC9zdmc+';
+    snakeBody.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PGVsbGlwc2UgY3g9IjgiIGN5PSI4IiByeD0iNyIgcnk9IjQiIGZpbGw9IiMzMzY2ZmYiLz48L3N2Zz4=';
+    appleImg.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjciIGZpbGw9IiNmZjAwMDAiLz48cGF0aCBkPSJNOCwxIEw4LDMgTDEwLDIiIHN0cm9rZT0iIzAwODAwMCIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9zdmc+';
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    function updateScore() {
+      document.getElementById('score').textContent = score;
+      if (score > highestScore) {
+        highestScore = score;
+        document.getElementById('highest-score').textContent = highestScore;
+      }
+    }
+
+    function resetGame() {
+      snake.x = 160;
+      snake.y = 160;
+      snake.cells = [];
+      snake.maxCells = 4;
+      snake.dx = grid;
+      snake.dy = 0;
+      apple.x = getRandomInt(0, 25) * grid;
+      apple.y = getRandomInt(0, 25) * grid;
+      score = 0;
+      updateScore();
+    }
+
+    function drawGrid() {
+      context.strokeStyle = 'rgba(144, 238, 144, 0.1)';
+      context.lineWidth = 1;
+      
+      // Draw vertical lines
+      for (let x = 0; x <= canvas.width; x += grid) {
+        context.beginPath();
+        context.moveTo(x, 0);
+        context.lineTo(x, canvas.height);
+        context.stroke();
+      }
+      
+      // Draw horizontal lines
+      for (let y = 0; y <= canvas.height; y += grid) {
+        context.beginPath();
+        context.moveTo(0, y);
+        context.lineTo(canvas.width, y);
+        context.stroke();
+      }
+    }
+
+    function getRotationAngle() {
+      if (snake.dx > 0) return 0;
+      if (snake.dx < 0) return Math.PI;
+      if (snake.dy < 0) return -Math.PI/2;
+      if (snake.dy > 0) return Math.PI/2;
+      return 0;
+    }
+
+    function loop() {
+      if (paused) {
+        requestAnimationFrame(loop);
+        return;
+      }
+
+      requestAnimationFrame(loop);
+
+      if (++count < 4) {
+        return;
+      }
+
+      count = 0;
+      context.clearRect(0, 0, canvas.width, canvas.height);
+
+      drawGrid();
+
+      snake.x += snake.dx;
+      snake.y += snake.dy;
+
+      // Wrap around logic - no game over, just wrap to other side
+      if (snake.x < 0) {
+        snake.x = canvas.width - grid;
+      } else if (snake.x >= canvas.width) {
+        snake.x = 0;
+      }
+
+      if (snake.y < 0) {
+        snake.y = canvas.height - grid;
+      } else if (snake.y >= canvas.height) {
+        snake.y = 0;
+      }
+
+      snake.cells.unshift({ x: snake.x, y: snake.y });
+
+      if (snake.cells.length > snake.maxCells) {
+        snake.cells.pop();
+      }
+
+      // Draw apple
+      context.drawImage(appleImg, apple.x, apple.y, grid, grid);
+
+      // Draw snake
+      snake.cells.forEach(function(cell, index) {
+        if (index === 0) {
+            // Draw head
+            context.save();
+            context.translate(cell.x + grid/2, cell.y + grid/2);
+            context.rotate(getRotationAngle());
+            context.drawImage(snakeHead, -grid, -grid, grid*2, grid*2);
+            context.restore();
+        } else {
+            // Simple body segment drawing
+            context.fillStyle = '#3366ff';
+            context.beginPath();
+            context.roundRect(cell.x + 1, cell.y + 1, grid - 2, grid - 2, 8);
+            context.fill();
+        }
+
+        // Collision detection code
+        if (cell.x === apple.x && cell.y === apple.y) {
+            snake.maxCells++;
+            score++;
+            updateScore();
+            apple.x = getRandomInt(0, 25) * grid;
+            apple.y = getRandomInt(0, 25) * grid;
+        }
+
+        for (var i = index + 1; i < snake.cells.length; i++) {
+            if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
+                resetGame();
+                return;
+            }
+        }
+      });
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.which === 37 && snake.dx === 0) {
+        snake.dx = -grid;
+        snake.dy = 0;
+      } else if (e.which === 38 && snake.dy === 0) {
+        snake.dy = -grid;
+        snake.dx = 0;
+      } else if (e.which === 39 && snake.dx === 0) {
+        snake.dx = grid;
+        snake.dy = 0;
+      } else if (e.which === 40 && snake.dy === 0) {
+        snake.dy = grid;
+        snake.dx = 0;
+      }
+    });
+
+    document.getElementById('pause-btn').addEventListener('click', function () {
+      paused = !paused;
+      this.textContent = paused ? 'Resume' : 'Pause';
+    });
+
+    document.getElementById('restart-btn').addEventListener('click', function () {
+      resetGame();
+    });
+
+    document.getElementById('new-game-btn').addEventListener('click', function () {
+      resetGame();
+      highestScore = 0;
+      document.getElementById('highest-score').textContent = highestScore;
+    });
+
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>

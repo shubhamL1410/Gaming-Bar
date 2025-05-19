@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background-image: url('https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80');  /* Gaming-themed background with neon lights */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            animation: fadeIn 1.5s ease-in;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Add ambient light effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, 
+                rgba(255, 0, 255, 0.1), 
+                rgba(0, 255, 255, 0.1), 
+                transparent 60%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 20px;
+            padding: 20px;
+            max-width: 700px;
+            margin: auto;
+            animation: slideUp 1s ease-out;
+            perspective: 1000px; /* Adds depth perception */
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .game-box {
+            border: none;
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            animation: scaleIn 0.5s ease-out;
+            animation-fill-mode: both;
+            isolation: isolate;
+            position: relative;
+            overflow: hidden;
+            /* Only apply transition to the hovered element */
+            transition: none;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Add glow effect to game boxes */
+        .game-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center,
+                rgba(255, 255, 255, 0.1) 0%,
+                transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .game-box:hover::before {
+            opacity: 1;
+        }
+
+        /* Apply transition only on hover */
+        .game-box:hover {
+            transition: transform 0.3s, box-shadow 0.3s, background 0.3s, border 0.3s;
+            transform: scale(1.1) translateY(-10px);
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5),
+                        0 0 30px rgba(255, 0, 255, 0.3);
+            z-index: 2;
+        }
+
+        /* Ensure other boxes don't move at all */
+        .container:hover .game-box:not(:hover) {
+            transform: none;
+            transition: none;
+            z-index: 1;
+        }
+
+        .game-box img {
+            width: 90px;
+            height: 90px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ff00ff,
+                         0 0 20px #ff00ff,
+                         0 0 30px #ff00ff;
+            color: #00ffff;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #ff00ff,
+                            0 0 20px #ff00ff,
+                            0 0 30px #ff00ff;
+            }
+            to {
+                text-shadow: 0 0 20px #ff00ff,
+                            0 0 30px #ff00ff,
+                            0 0 40px #ff00ff,
+                            0 0 50px #ff00ff;
+            }
+        }
+
+        /* Add animation delay for each game box */
+        .game-box:nth-child(1) { animation-delay: 0.2s; }
+        .game-box:nth-child(2) { animation-delay: 0.4s; }
+        .game-box:nth-child(3) { animation-delay: 0.6s; }
+        .game-box:nth-child(4) { animation-delay: 0.8s; }
+        .game-box:nth-child(5) { animation-delay: 1.0s; }
+        .game-box:nth-child(6) { animation-delay: 1.2s; }
+    </style>
+    <script>
+        // Add audio element
+        const hoverSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+        const clickSound = new Audio('https://assets.mixkit.co/active_storage/sfx/1432/1432-preview.mp3');
+        
+        // Configure sounds to be quieter
+        hoverSound.volume = 0.2;
+        clickSound.volume = 0.3;
+
+        // Add event listeners when document loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const gameBoxes = document.querySelectorAll('.game-box');
+            
+            gameBoxes.forEach(box => {
+                box.addEventListener('mouseenter', () => {
+                    hoverSound.currentTime = 0; // Reset sound
+                    hoverSound.play();
+                });
+                
+                box.addEventListener('click', () => {
+                    clickSound.currentTime = 0; // Reset sound
+                    clickSound.play();
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Namaste</h1>
+    <div class="container">
+        <div class="game-box" onclick="window.open('tic-tac-toe.html', '_blank')">
+            <img src="tic_photo.png" alt="Tic-Tac-Toe">
+            <p>Tic-Tac-Toe</p>
+        </div>
+        <div class="game-box" onclick="window.open('Stone-Paper_Sizer.html', '_blank')">
+            <img src="https://cdn-icons-png.flaticon.com/512/6831/6831874.png" alt="Rock-Paper-Scissors">
+            <p>Rock-Paper-Scissors</p>
+        </div>
+        <div class="game-box" onclick="window.open('tetris.html', '_blank')">
+            <img src="t photo.jpeg" alt="Tetris">
+            <p>Tetris</p>
+        </div>
+        <div class="game-box" onclick="window.open('Snakegame.html', '_blank')">
+            <img src="snake.png" alt="Snake Game">
+            <p>Snake Game</p>
+        </div>
+        <div class="game-box" onclick="window.open('brick-breaker.html', '_blank')">
+            <img src="b b.png" alt="Brick Breaker">
+            <p>Brick Breaker</p>
+        </div>
+        <div class="game-box" onclick="window.open('Connect the Pipes.html', '_blank')">
+            <img src="c p.png" alt="Connect Pipes">
+            <p>Connect Pipes</p>
+        </div>
+    </div>
+</body>
+</html>
